@@ -5,19 +5,19 @@ import javax.swing.JFrame;
 public class Main {
 
     public static void main(String[] args) {
-        JFrame frame = new JFrame();
-        frame.setTitle("Mini Fighter");
-        frame.setResizable(false);
+        JFrame window = new JFrame();
+        window.setTitle("Mini Fighter");
+        window.setResizable(false);
 
-        GamePanel gamePanel = new GamePanel();
-        frame.add(gamePanel);
+        GamePanel panel = new GamePanel();
+        window.add(panel);
 
-        frame.pack();
+        window.pack();
 
-        frame.setLocationRelativeTo(null);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setVisible(true);
+        window.setLocationRelativeTo(null);
+        window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        window.setVisible(true);
 
-        gamePanel.startGameThread();
+        panel.startGameThread();
     }
 }

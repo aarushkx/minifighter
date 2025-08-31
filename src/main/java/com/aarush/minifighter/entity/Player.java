@@ -26,14 +26,14 @@ public class Player extends Entity {
     }
 
     public void setInitialState() {
-        x = panel.TILE_SIZE * 4;
-        y = panel.TILE_SIZE * 7;
+        x = panel.TILE_SIZE * 3;
+        y = panel.TILE_SIZE * 5;
         speed = 3;
-        direction = "DOWN";
+        direction = "RIGHT";
     }
 
     public void loadImages() {
-        String imagePath = "/player/spritesheet.png";
+        String imagePath = "/player/player.png";
         BufferedImage sheet;
 
         try (InputStream in = getClass().getResourceAsStream(imagePath)) {

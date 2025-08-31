@@ -2,6 +2,7 @@ package com.aarush.minifighter.main;
 
 import com.aarush.minifighter.entity.Player;
 import com.aarush.minifighter.handler.KeyHandler;
+import com.aarush.minifighter.tile.TileManager;
 
 import javax.swing.JPanel;
 import java.awt.Dimension;
@@ -14,22 +15,23 @@ public class GamePanel extends JPanel implements Runnable {
     // Screen settings
     public final int ORIGINAL_TILE_SIZE = 16; // 16x16
     public final int SCALE = 3;
-    public final int TILE_SIZE = ORIGINAL_TILE_SIZE * SCALE; // 48x48
-    public final int MAX_SCREEN_COL = 9;
-    public final int MAX_SCREEN_ROW = 9;
-    public final int SCREEN_WIDTH = TILE_SIZE * MAX_SCREEN_COL; // 432px
-    public final int SCREEN_HEIGHT = TILE_SIZE * MAX_SCREEN_ROW; // 432px
+    public final int TILE_SIZE = ORIGINAL_TILE_SIZE * SCALE; // 48 px
+    public final int MAX_SCREEN_COL = 19;
+    public final int MAX_SCREEN_ROW = 11;
+    public final int SCREEN_WIDTH = TILE_SIZE * MAX_SCREEN_COL; // 912 px
+    public final int SCREEN_HEIGHT = TILE_SIZE * MAX_SCREEN_ROW; // 528 px
     public final int FPS = 60;
 
     Thread gameThread;
 
+    TileManager tileManager = new TileManager(this);
     KeyHandler keyHandler = new KeyHandler(this);
 
     public Player player = new Player(this, keyHandler);
 
     public GamePanel() {
         this.setPreferredSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGHT));
-        this.setBackground(Color.BLACK);
+        this.setBackground(new Color(80, 155, 102));
         this.setDoubleBuffered(true);
         this.addKeyListener(keyHandler);
         this.setFocusable(true);
@@ -71,7 +73,10 @@ public class GamePanel extends JPanel implements Runnable {
         super.paintComponent(g);
 
         Graphics2D g2 = (Graphics2D) g;
+
+        tileManager.draw(g2);
         player.draw(g2);
+
         g2.dispose();
     }
 }
