@@ -48,10 +48,9 @@ public class TileManager {
             // Plains
             putSheetSlice(5, "/tiles/plains.png", grid(0, 3, 0, 5), 16, 16, panel.TILE_SIZE, scaler, false, null);
             // Decors
-            putSheetSlice(30, "/tiles/decor_8x8.png", grid(0, 3, 0, 3), 8, 8, panel.TILE_SIZE / 2, scaler, false, null);
-            // Trees
-            Rectangle treeCollision = new Rectangle(8, 32, 32, 16);
-            putSheetSlice(46, "/tiles/objects.png", new int[][]{{0, 0}, {1, 0}}, 16, 16, panel.TILE_SIZE, scaler, true, treeCollision);
+            putSheetSlice(30, "/tiles/decor_8x8.png", grid(0, 3, 0, 3), 8, 8, panel.TILE_SIZE / 3, scaler, false, null);
+            // Objects (Rocks)
+            putSheetSlice(46, "/tiles/objects.png", new int[][]{{0, 0}, {1, 0}}, 16, 16, panel.TILE_SIZE / 2, scaler, false, null);
         } catch (Exception e) {
             e.printStackTrace();
         }

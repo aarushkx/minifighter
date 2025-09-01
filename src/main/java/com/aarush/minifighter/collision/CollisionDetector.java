@@ -2,6 +2,7 @@ package com.aarush.minifighter.collision;
 
 import com.aarush.minifighter.entity.Entity;
 import com.aarush.minifighter.main.GamePanel;
+import com.aarush.minifighter.object.GameObject;
 
 import java.awt.Rectangle;
 
@@ -24,7 +25,12 @@ public class CollisionDetector {
         int entityTopRow = entityTopY / panel.TILE_SIZE;
         int entityBottomRow = entityBottomY / panel.TILE_SIZE;
 
-        Rectangle entityNextPos = new Rectangle(entity.x + entity.collisionArea.x, entity.y + entity.collisionArea.y, entity.collisionArea.width, entity.collisionArea.height);
+        int x = entity.x + entity.collisionArea.x;
+        int y = entity.y + entity.collisionArea.y;
+        int width = entity.collisionArea.width;
+        int height = entity.collisionArea.height;
+
+        Rectangle entityNextPos = new Rectangle(x, y, width, height);
 
         switch (entity.direction) {
             case "UP" -> {
@@ -88,6 +94,7 @@ public class CollisionDetector {
             case "LEFT" -> entity.collisionArea.x -= entity.speed;
             case "RIGHT" -> entity.collisionArea.x += entity.speed;
         }
+
         if (entity.collisionArea.intersects(panel.player.collisionArea)) {
             if (panel.player != entity) {
                 entity.isCollisionDetected = true;
@@ -100,5 +107,41 @@ public class CollisionDetector {
         panel.player.collisionArea.y = panel.player.collisionAreaDefaultY;
 
         return contactPlayer;
+    }
+
+    public void checkObject(Entity entity) {
+        int entityOriginalX = entity.collisionArea.x;
+        int entityOriginalY = entity.collisionArea.y;
+
+        entity.collisionArea.x = entity.x + entity.collisionArea.x;
+        entity.collisionArea.y = entity.y + entity.collisionArea.y;
+
+        switch (entity.direction) {
+            case "UP" -> entity.collisionArea.y -= entity.speed;
+            case "DOWN" -> entity.collisionArea.y += entity.speed;
+            case "LEFT" -> entity.collisionArea.x -= entity.speed;
+            case "RIGHT" -> entity.collisionArea.x += entity.speed;
+        }
+
+        for (int i = 0; i < panel.gameObjectManager.getGameObjects().size(); i++) {
+            GameObject gameObject = panel.gameObjectManager.getGameObjects().get(i);
+
+            if (gameObject != null && gameObject.hasCollision()) {
+                int x = gameObject.getWorldX() + gameObject.getCollisionArea().x;
+                int y = gameObject.getWorldY() + gameObject.getCollisionArea().y;
+                int width = gameObject.getCollisionArea().width;
+                int height = gameObject.getCollisionArea().height;
+
+                Rectangle objectCollisionRect = new Rectangle(x, y, width, height);
+
+                if (entity.collisionArea.intersects(objectCollisionRect)) {
+                    entity.isCollisionDetected = true;
+                    break;
+                }
+            }
+        }
+
+        entity.collisionArea.x = entityOriginalX;
+        entity.collisionArea.y = entityOriginalY;
     }
 }

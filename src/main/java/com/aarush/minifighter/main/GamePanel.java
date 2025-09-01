@@ -3,6 +3,8 @@ package com.aarush.minifighter.main;
 import com.aarush.minifighter.collision.CollisionDetector;
 import com.aarush.minifighter.entity.Player;
 import com.aarush.minifighter.handler.KeyHandler;
+import com.aarush.minifighter.object.GameObjectManager;
+import com.aarush.minifighter.setup.ObjectSetter;
 import com.aarush.minifighter.tile.TileManager;
 import com.aarush.minifighter.ui.UI;
 
@@ -32,10 +34,12 @@ public class GamePanel extends JPanel implements Runnable {
     Thread gameThread;
 
     KeyHandler keyHandler = new KeyHandler(this);
+    ObjectSetter objectSetter = new ObjectSetter(this);
     UI ui = new UI(this);
 
     public TileManager tileManager = new TileManager(this);
     public CollisionDetector collisionDetector = new CollisionDetector(this);
+    public GameObjectManager gameObjectManager = new GameObjectManager(this);
     public Player player = new Player(this, keyHandler);
 
     public boolean debug = false;
@@ -46,6 +50,10 @@ public class GamePanel extends JPanel implements Runnable {
         this.setDoubleBuffered(true);
         this.addKeyListener(keyHandler);
         this.setFocusable(true);
+    }
+
+    public void setupGame() {
+        objectSetter.setupAllGameObjects();
     }
 
     public void startGameThread() {
@@ -100,6 +108,7 @@ public class GamePanel extends JPanel implements Runnable {
 
         tileManager.draw(g2);
         player.draw(g2);
+        gameObjectManager.draw(g2);
         ui.draw(g2);
 
         g2.dispose();

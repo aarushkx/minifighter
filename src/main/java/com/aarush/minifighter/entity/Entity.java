@@ -38,12 +38,14 @@ public class Entity {
 
     public void update() {
         isCollisionDetected = false;
+
         panel.collisionDetector.checkTile(this);
+        panel.collisionDetector.checkObject(this);
 
         boolean contactPlayer = panel.collisionDetector.checkPlayer(this);
 
         if (contactPlayer) {
-            System.out.println("COLLISION!");
+            System.out.println("PLAYER CONTACT!");
         }
 
         if (!isCollisionDetected) {
@@ -56,7 +58,6 @@ public class Entity {
                 }
             }
         }
-
         spriteAnimationCounter++;
         if (spriteAnimationCounter > animationSpeed) {
             currentSpriteIndex = (currentSpriteIndex + 1) % 6;

@@ -18,6 +18,7 @@ public class Main {
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         window.setVisible(true);
 
+        panel.setupGame();
         panel.startGameThread();
     }
 }

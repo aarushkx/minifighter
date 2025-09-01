@@ -23,24 +23,27 @@ public class Player extends Entity {
 
         this.keyHandler = keyHandler;
 
+        setupCollisionArea();
+        setupInitialState();
+        loadImages();
+    }
+
+    private void setupCollisionArea() {
         collisionArea = new Rectangle();
         collisionArea.x = 32;
         collisionArea.y = 48;
         collisionArea.width = 32;
         collisionArea.height = 32;
-
-        setInitialState();
-        loadImages();
     }
 
-    public void setInitialState() {
+    private void setupInitialState() {
         x = panel.TILE_SIZE * 3;
         y = panel.TILE_SIZE * 5;
         speed = 3;
         direction = "RIGHT";
     }
 
-    public void loadImages() {
+    private void loadImages() {
         String imagePath = "/player/player.png";
         BufferedImage sheet;
 
@@ -88,6 +91,7 @@ public class Player extends Entity {
 
             isCollisionDetected = false;
             panel.collisionDetector.checkTile(this);
+            panel.collisionDetector.checkObject(this);
 
             if (!isCollisionDetected) {
                 switch (direction) {
