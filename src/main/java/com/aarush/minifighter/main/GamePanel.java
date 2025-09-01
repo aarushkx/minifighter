@@ -1,8 +1,10 @@
 package com.aarush.minifighter.main;
 
+import com.aarush.minifighter.collision.CollisionDetector;
 import com.aarush.minifighter.entity.Player;
 import com.aarush.minifighter.handler.KeyHandler;
 import com.aarush.minifighter.tile.TileManager;
+import com.aarush.minifighter.ui.UI;
 
 import javax.swing.JPanel;
 import java.awt.Dimension;
@@ -20,14 +22,23 @@ public class GamePanel extends JPanel implements Runnable {
     public final int MAX_SCREEN_ROW = 11;
     public final int SCREEN_WIDTH = TILE_SIZE * MAX_SCREEN_COL; // 912 px
     public final int SCREEN_HEIGHT = TILE_SIZE * MAX_SCREEN_ROW; // 528 px
+
+    // FPS settings
     public final int FPS = 60;
+    private int frameCount = 0;
+    private long lastFpsTime = System.currentTimeMillis();
+    public int currentFPS = 0;
 
     Thread gameThread;
 
-    TileManager tileManager = new TileManager(this);
     KeyHandler keyHandler = new KeyHandler(this);
+    UI ui = new UI(this);
 
+    public TileManager tileManager = new TileManager(this);
+    public CollisionDetector collisionDetector = new CollisionDetector(this);
     public Player player = new Player(this, keyHandler);
+
+    public boolean debug = false;
 
     public GamePanel() {
         this.setPreferredSize(new Dimension(SCREEN_WIDTH, SCREEN_HEIGHT));
@@ -51,6 +62,14 @@ public class GamePanel extends JPanel implements Runnable {
             update();
             repaint();
 
+            frameCount++;
+            long currentTime = System.currentTimeMillis();
+            if (currentTime - lastFpsTime >= 1000) {
+                currentFPS = frameCount;
+                frameCount = 0;
+                lastFpsTime = currentTime;
+            }
+
             try {
                 double sleepTimeNanos = nextFrameTime - System.nanoTime();
                 double sleepTimeMillis = sleepTimeNanos / 1_000_000;
@@ -67,6 +86,11 @@ public class GamePanel extends JPanel implements Runnable {
 
     public void update() {
         player.update();
+
+        if (keyHandler.debugPressed) {
+            debug = !debug;
+            keyHandler.debugPressed = false;
+        }
     }
 
     public void paintComponent(Graphics g) {
@@ -76,6 +100,7 @@ public class GamePanel extends JPanel implements Runnable {
 
         tileManager.draw(g2);
         player.draw(g2);
+        ui.draw(g2);
 
         g2.dispose();
     }

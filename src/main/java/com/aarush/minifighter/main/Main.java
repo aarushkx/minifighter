@@ -6,7 +6,7 @@ public class Main {
 
     public static void main(String[] args) {
         JFrame window = new JFrame();
-        window.setTitle("Mini Fighter");
+        window.setTitle(Game.GAME_NAME);
         window.setResizable(false);
 
         GamePanel panel = new GamePanel();

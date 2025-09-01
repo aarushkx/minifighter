@@ -2,6 +2,7 @@ package com.aarush.minifighter.entity;
 
 import com.aarush.minifighter.main.GamePanel;
 
+import java.awt.Rectangle;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 
@@ -18,12 +19,16 @@ public class Entity {
     public BufferedImage[] rightIdleSprites = new BufferedImage[6];
 
     public String direction = "DOWN";
-    public int spriteNum = 0;
-    public int spriteCounter = 0;
+    public int currentSpriteIndex = 0;
+    public int spriteAnimationCounter = 0;
     public int x, y;
     public int speed;
     public int animationSpeed = 4;
     public boolean isMoving = false;
+
+    public Rectangle collisionArea = new Rectangle(0, 0, 48, 48);
+    public int collisionAreaDefaultX, collisionAreaDefaultY;
+    public boolean isCollisionDetected = false;
 
     GamePanel panel;
 
@@ -32,19 +37,30 @@ public class Entity {
     }
 
     public void update() {
-        if (isMoving) {
-            switch (direction) {
-                case "UP" -> y -= speed;
-                case "DOWN" -> y += speed;
-                case "LEFT" -> x -= speed;
-                case "RIGHT" -> x += speed;
+        isCollisionDetected = false;
+        panel.collisionDetector.checkTile(this);
+
+        boolean contactPlayer = panel.collisionDetector.checkPlayer(this);
+
+        if (contactPlayer) {
+            System.out.println("COLLISION!");
+        }
+
+        if (!isCollisionDetected) {
+            if (isMoving) {
+                switch (direction) {
+                    case "UP" -> y -= speed;
+                    case "DOWN" -> y += speed;
+                    case "LEFT" -> x -= speed;
+                    case "RIGHT" -> x += speed;
+                }
             }
         }
 
-        spriteCounter++;
-        if (spriteCounter > animationSpeed) {
-            spriteNum = (spriteNum + 1) % 6;
-            spriteCounter = 0;
+        spriteAnimationCounter++;
+        if (spriteAnimationCounter > animationSpeed) {
+            currentSpriteIndex = (currentSpriteIndex + 1) % 6;
+            spriteAnimationCounter = 0;
         }
     }
 
@@ -53,17 +69,17 @@ public class Entity {
 
         if (isMoving) {
             switch (direction) {
-                case "UP" -> image = upSprites[spriteNum];
-                case "DOWN" -> image = downSprites[spriteNum];
-                case "LEFT" -> image = leftSprites[spriteNum];
-                case "RIGHT" -> image = rightSprites[spriteNum];
+                case "UP" -> image = upSprites[currentSpriteIndex];
+                case "DOWN" -> image = downSprites[currentSpriteIndex];
+                case "LEFT" -> image = leftSprites[currentSpriteIndex];
+                case "RIGHT" -> image = rightSprites[currentSpriteIndex];
             }
         } else {
             switch (direction) {
-                case "UP" -> image = upIdleSprites[spriteNum];
-                case "DOWN" -> image = downIdleSprites[spriteNum];
-                case "LEFT" -> image = leftIdleSprites[spriteNum];
-                case "RIGHT" -> image = rightIdleSprites[spriteNum];
+                case "UP" -> image = upIdleSprites[currentSpriteIndex];
+                case "DOWN" -> image = downIdleSprites[currentSpriteIndex];
+                case "LEFT" -> image = leftIdleSprites[currentSpriteIndex];
+                case "RIGHT" -> image = rightIdleSprites[currentSpriteIndex];
             }
         }
 

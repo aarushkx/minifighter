@@ -11,6 +11,7 @@ public class KeyHandler implements KeyListener {
 
     public boolean upPressed, downPressed, leftPressed, rightPressed;
     public boolean enterPressed;
+    public boolean debugPressed;
 
     public KeyHandler(GamePanel panel) {
         this.panel = panel;
@@ -28,6 +29,7 @@ public class KeyHandler implements KeyListener {
         if (code == KeyEvent.VK_A || code == KeyEvent.VK_LEFT) leftPressed = true;
         if (code == KeyEvent.VK_D || code == KeyEvent.VK_RIGHT) rightPressed = true;
         if (code == KeyEvent.VK_ENTER) enterPressed = true;
+        if (code == KeyEvent.VK_H) debugPressed = true;
     }
 
     @Override

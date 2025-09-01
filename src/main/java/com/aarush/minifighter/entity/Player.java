@@ -7,7 +7,9 @@ import com.aarush.minifighter.utils.ImageFlipper;
 import com.aarush.minifighter.utils.SliceSpritesheet;
 
 import javax.imageio.ImageIO;
+import java.awt.Rectangle;
 import java.awt.Graphics2D;
+import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.InputStream;
 import java.io.IOException;
@@ -20,6 +22,12 @@ public class Player extends Entity {
         super(panel);
 
         this.keyHandler = keyHandler;
+
+        collisionArea = new Rectangle();
+        collisionArea.x = 32;
+        collisionArea.y = 48;
+        collisionArea.width = 32;
+        collisionArea.height = 32;
 
         setInitialState();
         loadImages();
@@ -78,18 +86,22 @@ public class Player extends Entity {
             else if (keyHandler.leftPressed) direction = "LEFT";
             else if (keyHandler.rightPressed) direction = "RIGHT";
 
-            switch (direction) {
-                case "UP" -> y -= speed;
-                case "DOWN" -> y += speed;
-                case "LEFT" -> x -= speed;
-                case "RIGHT" -> x += speed;
-            }
+            isCollisionDetected = false;
+            panel.collisionDetector.checkTile(this);
 
+            if (!isCollisionDetected) {
+                switch (direction) {
+                    case "UP" -> y -= speed;
+                    case "DOWN" -> y += speed;
+                    case "LEFT" -> x -= speed;
+                    case "RIGHT" -> x += speed;
+                }
+            }
         }
-        spriteCounter++;
-        if (spriteCounter > animationSpeed) {
-            spriteNum = (spriteNum + 1) % 6;
-            spriteCounter = 0;
+        spriteAnimationCounter++;
+        if (spriteAnimationCounter > animationSpeed) {
+            currentSpriteIndex = (currentSpriteIndex + 1) % 6;
+            spriteAnimationCounter = 0;
         }
     }
 
@@ -99,20 +111,28 @@ public class Player extends Entity {
 
         if (isMoving) {
             switch (direction) {
-                case "UP" -> image = upSprites[spriteNum];
-                case "DOWN" -> image = downSprites[spriteNum];
-                case "LEFT" -> image = leftSprites[spriteNum];
-                case "RIGHT" -> image = rightSprites[spriteNum];
+                case "UP" -> image = upSprites[currentSpriteIndex];
+                case "DOWN" -> image = downSprites[currentSpriteIndex];
+                case "LEFT" -> image = leftSprites[currentSpriteIndex];
+                case "RIGHT" -> image = rightSprites[currentSpriteIndex];
             }
         } else {
             switch (direction) {
-                case "UP" -> image = upIdleSprites[spriteNum];
-                case "DOWN" -> image = downIdleSprites[spriteNum];
-                case "LEFT" -> image = leftIdleSprites[spriteNum];
-                case "RIGHT" -> image = rightIdleSprites[spriteNum];
+                case "UP" -> image = upIdleSprites[currentSpriteIndex];
+                case "DOWN" -> image = downIdleSprites[currentSpriteIndex];
+                case "LEFT" -> image = leftIdleSprites[currentSpriteIndex];
+                case "RIGHT" -> image = rightIdleSprites[currentSpriteIndex];
             }
         }
 
         g2.drawImage(image, x, y, null);
+
+        if (panel.debug) {
+            g2.setColor(new Color(255, 0, 0, 100));
+            g2.fillRect(x + collisionArea.x, y + collisionArea.y, collisionArea.width, collisionArea.height);
+
+            g2.setColor(Color.RED);
+            g2.drawRect(x + collisionArea.x, y + collisionArea.y, collisionArea.width, collisionArea.height);
+        }
     }
 }
