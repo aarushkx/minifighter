@@ -31,9 +31,9 @@ public class Player extends Entity {
     private void setupCollisionArea() {
         collisionArea = new Rectangle();
         collisionArea.x = 32;
-        collisionArea.y = 48;
+        collisionArea.y = 56;
         collisionArea.width = 32;
-        collisionArea.height = 32;
+        collisionArea.height = 24;
     }
 
     private void setupInitialState() {

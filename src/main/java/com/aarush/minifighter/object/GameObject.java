@@ -18,23 +18,6 @@ public class GameObject {
     public int collisionAreaDefaultX = 0;
     public int collisionAreaDefaultY = 0;
 
-    public void draw(Graphics2D g2, GamePanel panel) {
-        int screenX = worldX;
-        int screenY = worldY;
-
-        if (image != null) {
-            g2.drawImage(image, screenX, screenY, null);
-        }
-
-        if (panel.debug && collision) {
-            g2.setColor(new Color(255, 0, 0, 100));
-            g2.fillRect(screenX + collisionArea.x, screenY + collisionArea.y, collisionArea.width, collisionArea.height);
-
-            g2.setColor(Color.RED);
-            g2.drawRect(screenX + collisionArea.x, screenY + collisionArea.y, collisionArea.width, collisionArea.height);
-        }
-    }
-
     public String getName() {
         return name;
     }
@@ -53,5 +36,26 @@ public class GameObject {
 
     public Rectangle getCollisionArea() {
         return collisionArea;
+    }
+
+    public void loadImage(GamePanel panel) {}
+
+    public void setupCollisionArea() {}
+
+    public void draw(Graphics2D g2, GamePanel panel) {
+        int screenX = worldX;
+        int screenY = worldY;
+
+        if (image != null) {
+            g2.drawImage(image, screenX, screenY, null);
+        }
+
+        if (panel.debug && collision) {
+            g2.setColor(new Color(255, 0, 0, 100));
+            g2.fillRect(screenX + collisionArea.x, screenY + collisionArea.y, collisionArea.width, collisionArea.height);
+
+            g2.setColor(Color.RED);
+            g2.drawRect(screenX + collisionArea.x, screenY + collisionArea.y, collisionArea.width, collisionArea.height);
+        }
     }
 }
