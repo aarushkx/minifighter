@@ -37,75 +37,71 @@ public class TileManager {
         ImageScaler scaler = new ImageScaler();
 
         try {
-            // Grass
-            putSingle(0, "/tiles/grass.png", scaler, false, null);
-            // Walls
-            putSheetSlice(1, "/tiles/walls.png", new int[][]{{3, 1}, {3, 2}, {4, 0}, {4, 2}}, 16, 16, panel.TILE_SIZE, scaler, true, new Rectangle(0, 0, panel.TILE_SIZE, panel.TILE_SIZE));
+            // Tile 0: Grass
+            BufferedImage grassImage = ImageIO.read(getClass().getResourceAsStream("/tiles/grass.png"));
+            tiles[0] = new Tile();
+            tiles[0].image = scaler.scale(grassImage, panel.TILE_SIZE, panel.TILE_SIZE);
+            tiles[0].collision = false;
 
-            if (tiles[1] != null) {
-                tiles[1].collisionArea = new Rectangle(0, 28, panel.TILE_SIZE, 24);
+            // Tile 1: Wall Edge
+            BufferedImage wallSheet = ImageIO.read(getClass().getResourceAsStream("/tiles/walls.png"));
+            tiles[1] = new Tile();
+            tiles[1].image = scaler.scale(wallSheet.getSubimage(16, 3 * 16, 16, 16), panel.TILE_SIZE, panel.TILE_SIZE);
+            tiles[1].collision = true;
+            tiles[1].collisionArea = new Rectangle(0, 28, panel.TILE_SIZE, 24);
+
+            // Tile 2: Wall Top
+            tiles[2] = new Tile();
+            tiles[2].image = scaler.scale(wallSheet.getSubimage(2 * 16, 3 * 16, 16, 16), panel.TILE_SIZE, panel.TILE_SIZE);
+            tiles[2].collision = true;
+            tiles[2].collisionArea = new Rectangle(0, 28, panel.TILE_SIZE, 24);
+
+            // Tile 3: Wall Vertical
+            tiles[3] = new Tile();
+            tiles[3].image = scaler.scale(wallSheet.getSubimage(0, 4 * 16, 16, 16), panel.TILE_SIZE, panel.TILE_SIZE);
+            tiles[3].collision = true;
+            tiles[3].collisionArea = new Rectangle(0, 0, panel.TILE_SIZE, panel.TILE_SIZE);
+
+            // Tile 4: Wall Bottom
+            tiles[4] = new Tile();
+            tiles[4].image = scaler.scale(wallSheet.getSubimage(2 * 16, 4 * 16, 16, 16), panel.TILE_SIZE, panel.TILE_SIZE);
+            tiles[4].collision = true;
+            tiles[4].collisionArea = new Rectangle(0, 0, panel.TILE_SIZE, panel.TILE_SIZE);
+
+            // Tile (5-36): Plains (4x4 grid) x 2
+            BufferedImage plainsSheet = ImageIO.read(getClass().getResourceAsStream("/tiles/plains.png"));
+
+            int plainsIndex = 5;
+            for (int i = 0; i < 8; i++) {
+                for (int j = 0; j < 4; j++) {
+                    tiles[plainsIndex] = new Tile();
+                    tiles[plainsIndex].image = scaler.scale(plainsSheet.getSubimage(j * 16, i * 16, 16, 16), panel.TILE_SIZE, panel.TILE_SIZE);
+                    tiles[plainsIndex].collision = false;
+                    tiles[plainsIndex].collisionArea = new Rectangle(0, 0, 0, 0);
+                    plainsIndex++;
+                }
             }
-            if (tiles[2] != null) {
-                tiles[2].collisionArea = new Rectangle(0, 28, panel.TILE_SIZE, 24);
+
+            // Tile (37-40): Decor Grass (4 tiles)
+            BufferedImage decorGrassSheet = ImageIO.read(getClass().getResourceAsStream("/tiles/decor_8x8.png"));
+
+            int decorGrassIndex = 37;
+            for (int i = 0; i < 4; i++) {
+                tiles[decorGrassIndex] = new Tile();
+                tiles[decorGrassIndex].image = scaler.scale(decorGrassSheet.getSubimage(i * 8, 8, 8, 8), panel.TILE_SIZE / 3, panel.TILE_SIZE / 3);
+                tiles[decorGrassIndex].collision = false;
+                decorGrassIndex++;
             }
 
-            // Plains
-            putSheetSlice(5, "/tiles/plains.png", grid(0, 3, 0, 5), 16, 16, panel.TILE_SIZE, scaler, false, null);
-            // Decors
-            putSheetSlice(30, "/tiles/decor_8x8.png", grid(0, 3, 0, 3), 8, 8, panel.TILE_SIZE / 3, scaler, false, null);
-            // Objects (Rocks)
-            putSheetSlice(46, "/tiles/objects.png", new int[][]{{0, 0}, {1, 0}}, 16, 16, panel.TILE_SIZE / 2, scaler, false, null);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+            // Tile 41: Rock
+            BufferedImage objectsSheet = ImageIO.read(getClass().getResourceAsStream("/tiles/objects.png"));
 
-
-    private void putSingle(int index, String imagePath, ImageScaler scaler, boolean coll, Rectangle collisionArea) {
-        try {
-            BufferedImage image = ImageIO.read(getClass().getResourceAsStream(imagePath));
-
-            Tile t = new Tile();
-            t.image = scaler.scale(image, panel.TILE_SIZE, panel.TILE_SIZE);
-            t.collision = coll;
-            t.collisionArea = collisionArea != null ? collisionArea : (coll ? new Rectangle(0, 0, panel.TILE_SIZE, panel.TILE_SIZE) : new Rectangle(0, 0, 0, 0));
-            tiles[index] = t;
+            tiles[41] = new Tile();
+            tiles[41].image = scaler.scale(objectsSheet.getSubimage(0, 16, 16, 16), panel.TILE_SIZE / 2, panel.TILE_SIZE / 2);
+            tiles[41].collision = false;
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    private void putSheetSlice(int startIndex, String sheetPath, int[][] rcArray, int srcW, int srcH, int target, ImageScaler scaler, boolean coll, Rectangle collisionArea) {
-        try {
-            BufferedImage sheet = ImageIO.read(getClass().getResourceAsStream(sheetPath));
-            int index = startIndex;
-
-            for (int[] rc : rcArray) {
-                int r = rc[0], c = rc[1];
-                BufferedImage sub = sheet.getSubimage(c * srcW, r * srcH, srcW, srcH);
-
-                Tile t = new Tile();
-                t.image = scaler.scale(sub, target, target);
-                t.collision = coll;
-                t.collisionArea = collisionArea != null ? new Rectangle(collisionArea) : (coll ? new Rectangle(0, 0, target, target) : new Rectangle(0, 0, 0, 0));
-                tiles[index++] = t;
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private int[][] grid(int r0, int r1, int c0, int c1) {
-        int total = (r1 - r0 + 1) * (c1 - c0 + 1);
-        int[][] out = new int[total][2];
-
-        int n = 0;
-        for (int r = r0; r <= r1; r++) {
-            for (int c = c0; c <= c1; c++) {
-                out[n++] = new int[]{r, c};
-            }
-        }
-        return out;
     }
 
     private void loadMap() {
