@@ -44,8 +44,10 @@ public class UI {
                 "FPS: " + panel.currentFPS,
                 "Display: " + panel.MAX_SCREEN_COL + "x" + panel.MAX_SCREEN_ROW,
                 "Resolution: " + panel.SCREEN_WIDTH + "x" + panel.SCREEN_HEIGHT,
+                "Tile Size: " + panel.TILE_SIZE + " px",
                 "Tiles Drawn: " + panel.tileManager.tilesDrawnLastFrame + "/" + panel.tileManager.visibleTileArea,
                 "Total Tiles: " + panel.tileManager.totalTiles,
+                "Objects Drawn: " + panel.gameObjectManager.objectsDrawnLastFrame + "/" + panel.gameObjectManager.getTotalObjectCount(),
                 "Camera: (" + panel.cameraX + ", " + panel.cameraY + ")",
                 "Player: (" + panel.player.x + ", " + panel.player.y + ")",
                 "Player Screen: (" + panel.player.screenX + ", " + panel.player.screenY + ")"
