@@ -16,10 +16,10 @@ import java.io.IOException;
 
 public class Player extends Entity {
 
-    KeyHandler keyHandler;
-
     public final int screenX;
     public final int screenY;
+
+    KeyHandler keyHandler;
 
     public Player(GamePanel panel, KeyHandler keyHandler) {
         super(panel);
@@ -77,7 +77,7 @@ public class Player extends Entity {
         ImageFlipper flipper = new ImageFlipper();
         SliceSpritesheet slice = new SliceSpritesheet();
 
-        // Moving sprites
+        // Moving Sprites
         upSprites = slice.sliceRow(sheet, 5, 6, W, H, TARGET, scaler);
         downSprites = slice.sliceRow(sheet, 3, 6, W, H, TARGET, scaler);
         rightSprites = slice.sliceRow(sheet, 4, 6, W, H, TARGET, scaler);
@@ -85,17 +85,50 @@ public class Player extends Entity {
             leftSprites[i] = flipper.flipHorizontally(rightSprites[i]);
         }
 
-        // Idle sprites
+        // Idle Sprites
         upIdleSprites = slice.sliceRow(sheet, 2, 6, W, H, TARGET, scaler);
         downIdleSprites = slice.sliceRow(sheet, 0, 6, W, H, TARGET, scaler);
         rightIdleSprites = slice.sliceRow(sheet, 1, 6, W, H, TARGET, scaler);
         for (int i = 0; i < 6; i++) {
             leftIdleSprites[i] = flipper.flipHorizontally(rightIdleSprites[i]);
         }
+
+        // Attack Sprites
+        downAttackSprites = slice.sliceRow(sheet, 6, 4, W, H, TARGET, scaler);
+        rightAttackSprites = slice.sliceRow(sheet, 7, 4, W, H, TARGET, scaler);
+        upAttackSprites = slice.sliceRow(sheet, 8, 4, W, H, TARGET, scaler);
+        for (int i = 0; i < 4; i++) {
+            leftAttackSprites[i] = flipper.flipHorizontally(rightAttackSprites[i]);
+        }
+    }
+
+    private void attack() {
+        isAttacking = true;
+        attackAnimationCounter = 0;
+        attackSpriteIndex = 0;
+        System.out.println("ATTACK!");
     }
 
     @Override
     public void update() {
+        if (keyHandler.enterPressed && !isAttacking) {
+            attack();
+        }
+
+        if (isAttacking) {
+            attackAnimationCounter++;
+            if (attackAnimationCounter > attackAnimationSpeed) {
+                attackSpriteIndex++;
+                attackAnimationCounter = 0;
+
+                if (attackSpriteIndex >= 4) {
+                    isAttacking = false;
+                    attackSpriteIndex = 0;
+                }
+            }
+            return;
+        }
+
         isMoving = keyHandler.upPressed || keyHandler.downPressed || keyHandler.leftPressed || keyHandler.rightPressed;
 
         if (isMoving) {
@@ -129,6 +162,7 @@ public class Player extends Entity {
                 }
             }
         }
+
         spriteAnimationCounter++;
         if (spriteAnimationCounter > animationSpeed) {
             currentSpriteIndex = (currentSpriteIndex + 1) % 6;
@@ -140,7 +174,16 @@ public class Player extends Entity {
     public void draw(Graphics2D g2) {
         BufferedImage image = null;
 
-        if (isMoving) {
+        if (isAttacking) {
+            // Attack Animation
+            switch (direction) {
+                case "UP" -> image = upAttackSprites[attackSpriteIndex];
+                case "DOWN" -> image = downAttackSprites[attackSpriteIndex];
+                case "LEFT" -> image = leftAttackSprites[attackSpriteIndex];
+                case "RIGHT" -> image = rightAttackSprites[attackSpriteIndex];
+            }
+        } else if (isMoving) {
+            // Movement Animation
             switch (direction) {
                 case "UP" -> image = upSprites[currentSpriteIndex];
                 case "DOWN" -> image = downSprites[currentSpriteIndex];
@@ -148,6 +191,7 @@ public class Player extends Entity {
                 case "RIGHT" -> image = rightSprites[currentSpriteIndex];
             }
         } else {
+            // Idle Animation
             switch (direction) {
                 case "UP" -> image = upIdleSprites[currentSpriteIndex];
                 case "DOWN" -> image = downIdleSprites[currentSpriteIndex];

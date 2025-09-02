@@ -18,6 +18,16 @@ public class Entity {
     public BufferedImage[] leftIdleSprites = new BufferedImage[6];
     public BufferedImage[] rightIdleSprites = new BufferedImage[6];
 
+    public BufferedImage[] upAttackSprites = new BufferedImage[4];
+    public BufferedImage[] downAttackSprites = new BufferedImage[4];
+    public BufferedImage[] leftAttackSprites = new BufferedImage[4];
+    public BufferedImage[] rightAttackSprites = new BufferedImage[4];
+
+    public boolean isAttacking = false;
+    public int attackAnimationCounter = 0;
+    public int attackSpriteIndex = 0;
+    public int attackAnimationSpeed = 4;
+
     public String direction = "DOWN";
     public int currentSpriteIndex = 0;
     public int spriteAnimationCounter = 0;
