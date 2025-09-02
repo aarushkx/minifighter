@@ -3,10 +3,11 @@ package com.aarush.minifighter.ui;
 import com.aarush.minifighter.main.GamePanel;
 import com.aarush.minifighter.main.Game;
 
-import java.awt.Color;
-import java.awt.Graphics2D;
 import java.awt.Font;
 import java.awt.FontFormatException;
+import java.awt.FontMetrics;
+import java.awt.Graphics2D;
+import java.awt.Color;
 import java.io.InputStream;
 import java.io.IOException;
 
@@ -34,17 +35,37 @@ public class UI {
     }
 
     private void drawDebugMetrics() {
-        g2.setFont(font.deriveFont(Font.PLAIN, 18f));
+        g2.setFont(font.deriveFont(Font.PLAIN, 16f));
         g2.setColor(Color.WHITE);
 
-        int x = 10;
-        int y = 20;
+        String[] lines = {
+                Game.GAME_NAME + " <DEBUG_MODE>",
+                "by " + Game.AUTHOR,
+                "FPS: " + panel.currentFPS,
+                "Display: " + panel.MAX_SCREEN_COL + "x" + panel.MAX_SCREEN_ROW,
+                "Resolution: " + panel.SCREEN_WIDTH + "x" + panel.SCREEN_HEIGHT,
+                "Tiles Drawn: " + panel.tileManager.tilesDrawnLastFrame + "/" + panel.tileManager.visibleTileArea,
+                "Total Tiles: " + panel.tileManager.totalTiles,
+                "Camera: (" + panel.cameraX + ", " + panel.cameraY + ")",
+                "Player: (" + panel.player.x + ", " + panel.player.y + ")",
+                "Player Screen: (" + panel.player.screenX + ", " + panel.player.screenY + ")"
+        };
 
-        g2.drawString(Game.GAME_NAME + " <DEBUG_MODE>", x, y);
-        g2.drawString("by " + Game.AUTHOR, x, y += 25);
-        g2.drawString("FPS: " + panel.currentFPS, x, y += 25);
-        g2.drawString("Speed: " + panel.player.speed, x, y += 25);
-        g2.drawString("X: " + panel.player.x + ", Y: " + panel.player.y, x, y + 25);
+        int x = 10, y = 25, padding = 10;
+        int maxWidth = 0;
+
+        FontMetrics fm = g2.getFontMetrics();
+        for (String line : lines) {
+            maxWidth = Math.max(maxWidth, fm.stringWidth(line));
+        }
+
+        g2.setColor(new Color(0, 0, 0, 150));
+        g2.fillRect(0, 0, maxWidth + padding * 2, lines.length * 20 + padding * 2);
+
+        g2.setColor(Color.WHITE);
+        for (int i = 0; i < lines.length; i++) {
+            g2.drawString(lines[i], x, y + i * 20);
+        }
     }
 
     public void draw(Graphics2D g2) {

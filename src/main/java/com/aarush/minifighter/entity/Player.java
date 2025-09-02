@@ -18,12 +18,22 @@ public class Player extends Entity {
 
     KeyHandler keyHandler;
 
+    public final int screenX;
+    public final int screenY;
+
     public Player(GamePanel panel, KeyHandler keyHandler) {
         super(panel);
 
         this.keyHandler = keyHandler;
 
         setupCollisionArea();
+
+        int offsetX = collisionArea.x + (collisionArea.width / 2);   // 32 + 16 = 48
+        int offsetY = collisionArea.y + (collisionArea.height / 2);  // 56 + 12 = 68
+
+        screenX = (panel.SCREEN_WIDTH / 2) - offsetX; // 384 - 48 = 336 px
+        screenY = (panel.SCREEN_HEIGHT / 2) - offsetY; // 216 - 68 = 148 px
+
         setupInitialState();
         loadImages();
     }
@@ -34,13 +44,18 @@ public class Player extends Entity {
         collisionArea.y = 56;
         collisionArea.width = 32;
         collisionArea.height = 24;
+        collisionAreaDefaultX = collisionArea.x;
+        collisionAreaDefaultY = collisionArea.y;
     }
 
     private void setupInitialState() {
-        x = panel.TILE_SIZE * 3;
-        y = panel.TILE_SIZE * 5;
+        x = panel.TILE_SIZE * 13;
+        y = panel.TILE_SIZE * 15;
         speed = 3;
         direction = "RIGHT";
+
+        panel.cameraX = x - screenX;
+        panel.cameraY = y - screenY;
     }
 
     private void loadImages() {
@@ -95,10 +110,22 @@ public class Player extends Entity {
 
             if (!isCollisionDetected) {
                 switch (direction) {
-                    case "UP" -> y -= speed;
-                    case "DOWN" -> y += speed;
-                    case "LEFT" -> x -= speed;
-                    case "RIGHT" -> x += speed;
+                    case "UP" -> {
+                        y -= speed;
+                        panel.cameraY -= speed;
+                    }
+                    case "DOWN" -> {
+                        y += speed;
+                        panel.cameraY += speed;
+                    }
+                    case "LEFT" -> {
+                        x -= speed;
+                        panel.cameraX -= speed;
+                    }
+                    case "RIGHT" -> {
+                        x += speed;
+                        panel.cameraX += speed;
+                    }
                 }
             }
         }
@@ -129,14 +156,14 @@ public class Player extends Entity {
             }
         }
 
-        g2.drawImage(image, x, y, null);
+        g2.drawImage(image, screenX, screenY, null);
 
         if (panel.debug) {
             g2.setColor(new Color(255, 0, 0, 100));
-            g2.fillRect(x + collisionArea.x, y + collisionArea.y, collisionArea.width, collisionArea.height);
+            g2.fillRect(screenX + collisionArea.x, screenY + collisionArea.y, collisionArea.width, collisionArea.height);
 
             g2.setColor(Color.RED);
-            g2.drawRect(x + collisionArea.x, y + collisionArea.y, collisionArea.width, collisionArea.height);
+            g2.drawRect(screenX + collisionArea.x, screenY + collisionArea.y, collisionArea.width, collisionArea.height);
         }
     }
 }

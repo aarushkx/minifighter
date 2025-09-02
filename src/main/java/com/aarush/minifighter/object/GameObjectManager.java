@@ -30,7 +30,12 @@ public class GameObjectManager {
     public void draw(Graphics2D graphics2D) {
         for (GameObject gameObject : gameObjects) {
             if (gameObject != null) {
-                gameObject.draw(graphics2D, panel);
+                int screenX = gameObject.worldX - panel.cameraX;
+                int screenY = gameObject.worldY - panel.cameraY;
+
+                if (screenX < panel.SCREEN_WIDTH && screenY < panel.SCREEN_HEIGHT) {
+                    gameObject.draw(graphics2D, panel);
+                }
             }
         }
     }

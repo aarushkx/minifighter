@@ -56,10 +56,10 @@ public class CollisionDetector {
         }
     }
 
-    private void checkTileCollision(Entity entity, Rectangle entityRect, int col1, int col2, int row1, int row2) {
+    public void checkTileCollision(Entity entity, Rectangle entityRect, int col1, int col2, int row1, int row2) {
         for (int col = col1; col <= col2; col++) {
             for (int row = row1; row <= row2; row++) {
-                if (col >= 0 && col < panel.MAX_SCREEN_COL && row >= 0 && row < panel.MAX_SCREEN_ROW) {
+                if (col >= 0 && col < panel.MAX_WORLD_COL && row >= 0 && row < panel.MAX_WORLD_ROW) {
                     int tileNum = panel.tileManager.tileMap[col][row];
 
                     if (tileNum < panel.tileManager.tiles.length && panel.tileManager.tiles[tileNum] != null && panel.tileManager.tiles[tileNum].collision) {

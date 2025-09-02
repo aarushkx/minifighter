@@ -16,16 +16,28 @@ import java.awt.Graphics2D;
 
 public class GamePanel extends JPanel implements Runnable {
 
-    // Screen settings
+    // Tile
     public final int ORIGINAL_TILE_SIZE = 16; // 16x16
     public final int SCALE = 3;
     public final int TILE_SIZE = ORIGINAL_TILE_SIZE * SCALE; // 48 px
-    public final int MAX_SCREEN_COL = 19;
-    public final int MAX_SCREEN_ROW = 11;
-    public final int SCREEN_WIDTH = TILE_SIZE * MAX_SCREEN_COL; // 912 px
-    public final int SCREEN_HEIGHT = TILE_SIZE * MAX_SCREEN_ROW; // 528 px
 
-    // FPS settings
+    // Screen
+    public final int MAX_SCREEN_COL = 16;
+    public final int MAX_SCREEN_ROW = 9;
+    public final int SCREEN_WIDTH = TILE_SIZE * MAX_SCREEN_COL; // 768 px
+    public final int SCREEN_HEIGHT = TILE_SIZE * MAX_SCREEN_ROW; // 432 px
+
+    // World
+    public final int MAX_WORLD_COL = 39;
+    public final int MAX_WORLD_ROW = 31;
+    public final int WORLD_WIDTH = TILE_SIZE * MAX_WORLD_COL;
+    public final int WORLD_HEIGHT = TILE_SIZE * MAX_WORLD_ROW;
+
+    // Camera
+    public int cameraX = 0;
+    public int cameraY = 0;
+
+    // FPS
     public final int FPS = 60;
     private int frameCount = 0;
     private long lastFpsTime = System.currentTimeMillis();

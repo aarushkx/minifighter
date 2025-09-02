@@ -43,19 +43,24 @@ public class GameObject {
     public void setupCollisionArea() {}
 
     public void draw(Graphics2D g2, GamePanel panel) {
-        int screenX = worldX;
-        int screenY = worldY;
+        int screenX = worldX - panel.cameraX;
+        int screenY = worldY - panel.cameraY;
 
-        if (image != null) {
-            g2.drawImage(image, screenX, screenY, null);
-        }
+        int buffer = 4;
 
-        if (panel.debug && collision) {
-            g2.setColor(new Color(255, 0, 0, 100));
-            g2.fillRect(screenX + collisionArea.x, screenY + collisionArea.y, collisionArea.width, collisionArea.height);
+        if (screenX + panel.TILE_SIZE * buffer > 0 && screenX < panel.SCREEN_WIDTH * buffer && screenY + panel.TILE_SIZE * buffer > 0 && screenY < panel.SCREEN_HEIGHT * buffer) {
+            if (image != null) {
+                g2.drawImage(image, screenX, screenY, null);
+                // System.out.println("Drawing object!");
+            }
 
-            g2.setColor(Color.RED);
-            g2.drawRect(screenX + collisionArea.x, screenY + collisionArea.y, collisionArea.width, collisionArea.height);
+            if (panel.debug && collision) {
+                g2.setColor(new Color(255, 0, 0, 100));
+                g2.fillRect(screenX + collisionArea.x, screenY + collisionArea.y, collisionArea.width, collisionArea.height);
+
+                g2.setColor(Color.RED);
+                g2.drawRect(screenX + collisionArea.x, screenY + collisionArea.y, collisionArea.width, collisionArea.height);
+            }
         }
     }
 }

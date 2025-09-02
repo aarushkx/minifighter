@@ -17,16 +17,20 @@ public class TileManager {
 
     public int[][] tileMap;
     public Tile[] tiles = new Tile[100];
+    public int tilesDrawnLastFrame = 0;
+    public int totalTiles;
+    public int visibleTileArea;
 
     GamePanel panel;
 
     public TileManager(GamePanel panel) {
         this.panel = panel;
 
-        tileMap = new int[panel.MAX_SCREEN_COL][panel.MAX_SCREEN_ROW];
+        tileMap = new int[panel.MAX_WORLD_COL][panel.MAX_WORLD_ROW];
 
         loadTiles();
         loadMap();
+        calculateTileStats();
     }
 
     private void loadTiles() {
@@ -110,34 +114,57 @@ public class TileManager {
         try (InputStream is = getClass().getResourceAsStream(path);
              BufferedReader br = new BufferedReader(new InputStreamReader(is))) {
 
-            for (int row = 0; row < panel.MAX_SCREEN_ROW; row++) {
+            for (int row = 0; row < panel.MAX_WORLD_ROW; row++) {
                 String[] nums = br.readLine().split(" ");
-                for (int col = 0; col < panel.MAX_SCREEN_COL; col++)
+                for (int col = 0; col < panel.MAX_WORLD_COL; col++) {
                     tileMap[col][row] = Integer.parseInt(nums[col]);
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
+    public void calculateTileStats() {
+        totalTiles = panel.MAX_WORLD_COL * panel.MAX_WORLD_ROW;
+
+        int visibleCols = (panel.SCREEN_WIDTH / panel.TILE_SIZE) + 2;
+        int visibleRows = (panel.SCREEN_HEIGHT / panel.TILE_SIZE) + 2;
+        visibleTileArea = visibleCols * visibleRows;
+    }
+
     public void draw(Graphics2D g2) {
-        for (int row = 0, y = 0; row < panel.MAX_SCREEN_ROW; row++, y += panel.TILE_SIZE) {
-            for (int col = 0, x = 0; col < panel.MAX_SCREEN_COL; col++, x += panel.TILE_SIZE) {
+        int tilesDrawn = 0;
+
+        int startCol = Math.max(0, panel.cameraX / panel.TILE_SIZE);
+        int endCol = Math.min(panel.MAX_WORLD_COL - 1, (panel.cameraX + panel.SCREEN_WIDTH) / panel.TILE_SIZE);
+        int startRow = Math.max(0, panel.cameraY / panel.TILE_SIZE);
+        int endRow = Math.min(panel.MAX_WORLD_ROW - 1, (panel.cameraY + panel.SCREEN_HEIGHT) / panel.TILE_SIZE);
+
+        for (int row = startRow; row <= endRow; row++) {
+            for (int col = startCol; col <= endCol; col++) {
                 int index = tileMap[col][row];
 
                 if (index < tiles.length && tiles[index] != null) {
-                    g2.drawImage(tiles[index].image, x, y, null);
+                    int screenX = col * panel.TILE_SIZE - panel.cameraX;
+                    int screenY = row * panel.TILE_SIZE - panel.cameraY;
+
+                    g2.drawImage(tiles[index].image, screenX, screenY, null);
+                    tilesDrawn++;
 
                     if (panel.debug && tiles[index].collision) {
                         g2.setColor(new Color(255, 0, 0, 100));
-                        Rectangle collArea = tiles[index].collisionArea;
-                        g2.fillRect(x + collArea.x, y + collArea.y, collArea.width, collArea.height);
 
+                        Rectangle collArea = tiles[index].collisionArea;
+
+                        g2.fillRect(screenX + collArea.x, screenY + collArea.y, collArea.width, collArea.height);
                         g2.setColor(Color.RED);
-                        g2.drawRect(x + collArea.x, y + collArea.y, collArea.width, collArea.height);
+                        g2.drawRect(screenX + collArea.x, screenY + collArea.y, collArea.width, collArea.height);
                     }
                 }
             }
         }
+
+        tilesDrawnLastFrame = tilesDrawn;
     }
 }
