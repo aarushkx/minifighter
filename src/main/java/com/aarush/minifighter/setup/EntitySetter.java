@@ -1,5 +1,6 @@
 package com.aarush.minifighter.setup;
 
+import com.aarush.minifighter.entity.monster.Bat;
 import com.aarush.minifighter.entity.monster.Skeleton;
 import com.aarush.minifighter.entity.monster.Slime;
 import com.aarush.minifighter.main.GamePanel;
@@ -15,6 +16,7 @@ public class EntitySetter {
     public void setupAllEntities() {
         setupSlimes();
         setupSkeletons();
+        setupBats();
     }
 
     private void setupSlimes() {
@@ -26,6 +28,15 @@ public class EntitySetter {
     private void setupSkeletons() {
         addSkeleton(13, 13);
         addSkeleton(16, 14);
+    }
+
+    private void setupBats() {
+        addBat(13, 14);
+        addBat(15, 10);
+        addBat(10, 8);
+        addBat(7, 22);
+        addBat(23, 18);
+        addBat(25, 25);
     }
 
     private void addSlime(int tileX, int tileY) {
@@ -40,5 +51,12 @@ public class EntitySetter {
         skeleton.x = tileX * panel.TILE_SIZE;
         skeleton.y = tileY * panel.TILE_SIZE;
         panel.entityManager.addEntity(skeleton);
+    }
+
+    private void addBat(int tileX, int tileY) {
+        Bat bat = new Bat(panel);
+        bat.x = tileX * panel.TILE_SIZE;
+        bat.y = tileY * panel.TILE_SIZE;
+        panel.entityManager.addEntity(bat);
     }
 }
