@@ -56,7 +56,7 @@ public class CollisionDetector {
         }
     }
 
-    public void checkTileCollision(Entity entity, Rectangle entityRect, int col1, int col2, int row1, int row2) {
+    private void checkTileCollision(Entity entity, Rectangle entityRect, int col1, int col2, int row1, int row2) {
         for (int col = col1; col <= col2; col++) {
             for (int row = row1; row <= row2; row++) {
                 if (col >= 0 && col < panel.MAX_WORLD_COL && row >= 0 && row < panel.MAX_WORLD_ROW) {
@@ -79,9 +79,7 @@ public class CollisionDetector {
         }
     }
 
-    public boolean checkPlayer(Entity entity) {
-        boolean contactPlayer = false;
-
+    public void checkPlayer(Entity entity) {
         entity.collisionArea.x = entity.x + entity.collisionArea.x;
         entity.collisionArea.y = entity.y + entity.collisionArea.y;
 
@@ -98,15 +96,12 @@ public class CollisionDetector {
         if (entity.collisionArea.intersects(panel.player.collisionArea)) {
             if (panel.player != entity) {
                 entity.isCollisionDetected = true;
-                contactPlayer = true;
             }
         }
         entity.collisionArea.x = entity.collisionAreaDefaultX;
         entity.collisionArea.y = entity.collisionAreaDefaultY;
         panel.player.collisionArea.x = panel.player.collisionAreaDefaultX;
         panel.player.collisionArea.y = panel.player.collisionAreaDefaultY;
-
-        return contactPlayer;
     }
 
     public void checkObject(Entity entity) {
@@ -143,5 +138,42 @@ public class CollisionDetector {
 
         entity.collisionArea.x = entityOriginalX;
         entity.collisionArea.y = entityOriginalY;
+    }
+
+    public void checkEntity(Entity entity) {
+        int index = -1;
+
+        for (int i = 0; i < panel.entityManager.getEntities().size(); i++) {
+            Entity target = panel.entityManager.getEntities().get(i);
+
+            if (target != null && target != entity) {
+                entity.collisionArea.x = entity.x + entity.collisionArea.x;
+                entity.collisionArea.y = entity.y + entity.collisionArea.y;
+
+                target.collisionArea.x = target.x + target.collisionArea.x;
+                target.collisionArea.y = target.y + target.collisionArea.y;
+
+                switch (entity.direction) {
+                    case "UP" -> entity.collisionArea.y -= entity.speed;
+                    case "DOWN" -> entity.collisionArea.y += entity.speed;
+                    case "LEFT" -> entity.collisionArea.x -= entity.speed;
+                    case "RIGHT" -> entity.collisionArea.x += entity.speed;
+                }
+
+                if (entity.collisionArea.intersects(target.collisionArea)) {
+                    if (target != entity) {
+                        entity.isCollisionDetected = true;
+                        index = i;
+                    }
+                }
+
+                entity.collisionArea.x = entity.collisionAreaDefaultX;
+                entity.collisionArea.y = entity.collisionAreaDefaultY;
+                target.collisionArea.x = target.collisionAreaDefaultX;
+                target.collisionArea.y = target.collisionAreaDefaultY;
+
+                if (index != -1) break;
+            }
+        }
     }
 }

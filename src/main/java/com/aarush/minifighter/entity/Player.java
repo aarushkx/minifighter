@@ -23,22 +23,29 @@ public class Player extends Entity {
 
     public Player(GamePanel panel, KeyHandler keyHandler) {
         super(panel);
-
         this.keyHandler = keyHandler;
 
         setupCollisionArea();
 
-        int offsetX = collisionArea.x + (collisionArea.width / 2);   // 32 + 16 = 48
-        int offsetY = collisionArea.y + (collisionArea.height / 2);  // 56 + 12 = 68
+        int xOffset = collisionArea.x + (collisionArea.width / 2);   // 32 + 16 = 48
+        int yOffset = collisionArea.y + (collisionArea.height / 2);  // 56 + 12 = 68
 
-        screenX = (panel.SCREEN_WIDTH / 2) - offsetX; // 384 - 48 = 336 px
-        screenY = (panel.SCREEN_HEIGHT / 2) - offsetY; // 216 - 68 = 148 px
+        screenX = (panel.SCREEN_WIDTH / 2) - xOffset; // 384 - 48 = 336 px
+        screenY = (panel.SCREEN_HEIGHT / 2) - yOffset; // 216 - 68 = 148 px
 
         setupInitialState();
-        loadImages();
+        loadSprite();
     }
 
-    private void setupCollisionArea() {
+    private void attack() {
+        isAttacking = true;
+        attackAnimationCounter = 0;
+        attackSpriteIndex = 0;
+        System.out.println("ATTACK!");
+    }
+
+    @Override
+    public void setupCollisionArea() {
         collisionArea = new Rectangle();
         collisionArea.x = 32;
         collisionArea.y = 56;
@@ -48,7 +55,8 @@ public class Player extends Entity {
         collisionAreaDefaultY = collisionArea.y;
     }
 
-    private void setupInitialState() {
+    @Override
+    public void setupInitialState() {
         x = panel.TILE_SIZE * 13;
         y = panel.TILE_SIZE * 15;
         speed = 3;
@@ -58,7 +66,8 @@ public class Player extends Entity {
         panel.cameraY = y - screenY;
     }
 
-    private void loadImages() {
+    @Override
+    public void loadSprite() {
         String imagePath = "/player/player.png";
         BufferedImage sheet;
 
@@ -68,6 +77,21 @@ public class Player extends Entity {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
+        upSprites = new BufferedImage[6];
+        downSprites = new BufferedImage[6];
+        leftSprites = new BufferedImage[6];
+        rightSprites = new BufferedImage[6];
+
+        upIdleSprites = new BufferedImage[6];
+        downIdleSprites = new BufferedImage[6];
+        leftIdleSprites = new BufferedImage[6];
+        rightIdleSprites = new BufferedImage[6];
+
+        upAttackSprites = new BufferedImage[4];
+        downAttackSprites = new BufferedImage[4];
+        leftAttackSprites = new BufferedImage[4];
+        rightAttackSprites = new BufferedImage[4];
 
         final int W = panel.TILE_SIZE;
         final int H = panel.TILE_SIZE;
@@ -102,13 +126,6 @@ public class Player extends Entity {
         }
     }
 
-    private void attack() {
-        isAttacking = true;
-        attackAnimationCounter = 0;
-        attackSpriteIndex = 0;
-        System.out.println("ATTACK!");
-    }
-
     @Override
     public void update() {
         if (keyHandler.enterPressed && !isAttacking) {
@@ -130,7 +147,6 @@ public class Player extends Entity {
         }
 
         isMoving = keyHandler.upPressed || keyHandler.downPressed || keyHandler.leftPressed || keyHandler.rightPressed;
-
         if (isMoving) {
             if (keyHandler.upPressed) direction = "UP";
             else if (keyHandler.downPressed) direction = "DOWN";
@@ -140,6 +156,7 @@ public class Player extends Entity {
             isCollisionDetected = false;
             panel.collisionDetector.checkTile(this);
             panel.collisionDetector.checkObject(this);
+            panel.collisionDetector.checkEntity(this);
 
             if (!isCollisionDetected) {
                 switch (direction) {
@@ -162,7 +179,6 @@ public class Player extends Entity {
                 }
             }
         }
-
         spriteAnimationCounter++;
         if (spriteAnimationCounter > animationSpeed) {
             currentSpriteIndex = (currentSpriteIndex + 1) % 6;
@@ -205,7 +221,6 @@ public class Player extends Entity {
         if (panel.debug) {
             g2.setColor(new Color(255, 0, 0, 100));
             g2.fillRect(screenX + collisionArea.x, screenY + collisionArea.y, collisionArea.width, collisionArea.height);
-
             g2.setColor(Color.RED);
             g2.drawRect(screenX + collisionArea.x, screenY + collisionArea.y, collisionArea.width, collisionArea.height);
         }

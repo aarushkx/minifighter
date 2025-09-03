@@ -1,15 +1,15 @@
 package com.aarush.minifighter.ui;
 
-import com.aarush.minifighter.main.GamePanel;
 import com.aarush.minifighter.main.Game;
+import com.aarush.minifighter.main.GamePanel;
 
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontFormatException;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
-import java.awt.Color;
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 public class UI {
 
@@ -47,18 +47,20 @@ public class UI {
                 "Tile Size: " + panel.TILE_SIZE + " px",
                 "Tiles Drawn: " + panel.tileManager.tilesDrawnLastFrame + "/" + panel.tileManager.visibleTileArea,
                 "Total Tiles: " + panel.tileManager.totalTiles,
-                "Objects Drawn: " + panel.gameObjectManager.objectsDrawnLastFrame + "/" + panel.gameObjectManager.getTotalObjectCount(),
                 "Camera: (" + panel.cameraX + ", " + panel.cameraY + ")",
                 "Player: (" + panel.player.x + ", " + panel.player.y + ")",
-                "Player Screen: (" + panel.player.screenX + ", " + panel.player.screenY + ")"
+                "Player Screen: (" + panel.player.screenX + ", " + panel.player.screenY + ")",
+                "Objects Drawn: " + panel.gameObjectManager.objectsDrawnLastFrame + "/" + panel.gameObjectManager.getTotalObjectCount(),
+                "Entities Updated: " + panel.entityManager.entitiesUpdatedLastFrame,
+                "Entities Drawn: " + panel.entityManager.entitiesDrawnLastFrame + "/" + panel.entityManager.getTotalEntityCount()
         };
 
         int x = 10, y = 25, padding = 10;
         int maxWidth = 0;
 
-        FontMetrics fm = g2.getFontMetrics();
+        FontMetrics fontMetrics = g2.getFontMetrics();
         for (String line : lines) {
-            maxWidth = Math.max(maxWidth, fm.stringWidth(line));
+            maxWidth = Math.max(maxWidth, fontMetrics.stringWidth(line));
         }
 
         g2.setColor(new Color(0, 0, 0, 150));

@@ -1,16 +1,18 @@
 package com.aarush.minifighter.main;
 
 import com.aarush.minifighter.collision.CollisionDetector;
+import com.aarush.minifighter.entity.EntityManager;
 import com.aarush.minifighter.entity.Player;
 import com.aarush.minifighter.handler.KeyHandler;
 import com.aarush.minifighter.object.GameObjectManager;
+import com.aarush.minifighter.setup.EntitySetter;
 import com.aarush.minifighter.setup.ObjectSetter;
 import com.aarush.minifighter.tile.TileManager;
 import com.aarush.minifighter.ui.UI;
 
 import javax.swing.JPanel;
-import java.awt.Dimension;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 
@@ -47,11 +49,13 @@ public class GamePanel extends JPanel implements Runnable {
 
     KeyHandler keyHandler = new KeyHandler(this);
     ObjectSetter objectSetter = new ObjectSetter(this);
+    EntitySetter entitySetter = new EntitySetter(this);
     UI ui = new UI(this);
 
     public TileManager tileManager = new TileManager(this);
     public CollisionDetector collisionDetector = new CollisionDetector(this);
     public GameObjectManager gameObjectManager = new GameObjectManager(this);
+    public EntityManager entityManager = new EntityManager(this);
     public Player player = new Player(this, keyHandler);
 
     public boolean debug = false;
@@ -66,6 +70,7 @@ public class GamePanel extends JPanel implements Runnable {
 
     public void setupGame() {
         objectSetter.setupAllGameObjects();
+        entitySetter.setupAllEntities();
     }
 
     public void startGameThread() {
@@ -105,6 +110,7 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
     public void update() {
+        entityManager.update();
         player.update();
 
         if (keyHandler.debugPressed) {
@@ -119,6 +125,7 @@ public class GamePanel extends JPanel implements Runnable {
         Graphics2D g2 = (Graphics2D) g;
 
         tileManager.draw(g2);
+        entityManager.draw(g2);
         player.draw(g2);
         gameObjectManager.draw(g2);
         ui.draw(g2);

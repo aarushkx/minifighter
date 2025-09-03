@@ -2,26 +2,26 @@ package com.aarush.minifighter.entity;
 
 import com.aarush.minifighter.main.GamePanel;
 
-import java.awt.Rectangle;
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
 public class Entity {
 
-    public BufferedImage[] upSprites = new BufferedImage[6];
-    public BufferedImage[] downSprites = new BufferedImage[6];
-    public BufferedImage[] leftSprites = new BufferedImage[6];
-    public BufferedImage[] rightSprites = new BufferedImage[6];
+    public BufferedImage[] upSprites;
+    public BufferedImage[] downSprites;
+    public BufferedImage[] leftSprites;
+    public BufferedImage[] rightSprites;
 
-    public BufferedImage[] upIdleSprites = new BufferedImage[6];
-    public BufferedImage[] downIdleSprites = new BufferedImage[6];
-    public BufferedImage[] leftIdleSprites = new BufferedImage[6];
-    public BufferedImage[] rightIdleSprites = new BufferedImage[6];
+    public BufferedImage[] upIdleSprites;
+    public BufferedImage[] downIdleSprites;
+    public BufferedImage[] leftIdleSprites;
+    public BufferedImage[] rightIdleSprites;
 
-    public BufferedImage[] upAttackSprites = new BufferedImage[4];
-    public BufferedImage[] downAttackSprites = new BufferedImage[4];
-    public BufferedImage[] leftAttackSprites = new BufferedImage[4];
-    public BufferedImage[] rightAttackSprites = new BufferedImage[4];
+    public BufferedImage[] upAttackSprites;
+    public BufferedImage[] downAttackSprites;
+    public BufferedImage[] leftAttackSprites;
+    public BufferedImage[] rightAttackSprites;
 
     public boolean isAttacking = false;
     public int attackAnimationCounter = 0;
@@ -40,23 +40,30 @@ public class Entity {
     public int collisionAreaDefaultX, collisionAreaDefaultY;
     public boolean isCollisionDetected = false;
 
+    public int aiDecisionTimer = 0;
+
     GamePanel panel;
 
     public Entity(GamePanel panel) {
         this.panel = panel;
     }
 
-    public void update() {
-        isCollisionDetected = false;
+    public void setupCollisionArea() {}
 
+    public void setupInitialState() {}
+
+    public void loadSprite() {}
+
+    public void updateAI() {}
+
+    public void update() {
+        updateAI();
+
+        isCollisionDetected = false;
         panel.collisionDetector.checkTile(this);
         panel.collisionDetector.checkObject(this);
-
-        boolean contactPlayer = panel.collisionDetector.checkPlayer(this);
-
-        if (contactPlayer) {
-            System.out.println("PLAYER CONTACT!");
-        }
+        panel.collisionDetector.checkEntity(this);
+        panel.collisionDetector.checkPlayer(this);
 
         if (!isCollisionDetected) {
             if (isMoving) {
@@ -74,6 +81,7 @@ public class Entity {
             spriteAnimationCounter = 0;
         }
     }
+
 
     public void draw(Graphics2D g2) {
         BufferedImage image = null;
