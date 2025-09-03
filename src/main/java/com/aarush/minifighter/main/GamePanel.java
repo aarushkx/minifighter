@@ -2,7 +2,7 @@ package com.aarush.minifighter.main;
 
 import com.aarush.minifighter.collision.CollisionDetector;
 import com.aarush.minifighter.entity.EntityManager;
-import com.aarush.minifighter.entity.Player;
+import com.aarush.minifighter.entity.player.Player;
 import com.aarush.minifighter.handler.KeyHandler;
 import com.aarush.minifighter.object.GameObjectManager;
 import com.aarush.minifighter.setup.EntitySetter;

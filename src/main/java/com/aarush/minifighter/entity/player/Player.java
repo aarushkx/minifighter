@@ -1,5 +1,6 @@
-package com.aarush.minifighter.entity;
+package com.aarush.minifighter.entity.player;
 
+import com.aarush.minifighter.entity.Entity;
 import com.aarush.minifighter.handler.KeyHandler;
 import com.aarush.minifighter.main.GamePanel;
 import com.aarush.minifighter.utils.ImageScaler;

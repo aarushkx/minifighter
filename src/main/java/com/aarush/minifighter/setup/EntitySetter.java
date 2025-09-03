@@ -16,19 +16,15 @@ public class EntitySetter {
     }
 
     private void setupSlimes() {
-        Slime slime1 = new Slime(panel);
-        slime1.x = panel.TILE_SIZE * 15;
-        slime1.y = panel.TILE_SIZE * 15;
-        panel.entityManager.addEntity(slime1);
+        addSlime(15, 15);
+        addSlime(26, 14);
+        addSlime(8, 25);
+    }
 
-        Slime slime2 = new Slime(panel);
-        slime2.x = panel.TILE_SIZE * 26;
-        slime2.y = panel.TILE_SIZE * 14;
-        panel.entityManager.addEntity(slime2);
-
-        Slime slime3 = new Slime(panel);
-        slime3.x = panel.TILE_SIZE * 8;
-        slime3.y = panel.TILE_SIZE * 25;
-        panel.entityManager.addEntity(slime3);
+    private void addSlime(int tileX, int tileY) {
+        Slime slime = new Slime(panel);
+        slime.x = tileX * panel.TILE_SIZE;
+        slime.y = tileY * panel.TILE_SIZE;
+        panel.entityManager.addEntity(slime);
     }
 }

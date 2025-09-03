@@ -3,15 +3,15 @@ package com.aarush.minifighter.object;
 import com.aarush.minifighter.main.GamePanel;
 
 import java.awt.Graphics2D;
-import java.awt.Rectangle;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 public class GameObjectManager {
 
     public int objectsDrawnLastFrame = 0;
     List<GameObject> gameObjects = new ArrayList<>();
     GamePanel panel;
+
 
     public GameObjectManager(GamePanel panel) {
         this.panel = panel;
@@ -35,28 +35,17 @@ public class GameObjectManager {
 
     public void draw(Graphics2D g2) {
         int objectsDrawn = 0;
-        int buffer = panel.TILE_SIZE * 2;
-
-        int xScreen = -buffer / 2;
-        int yScreen = -buffer / 2;
-        int widthScreen = panel.SCREEN_WIDTH + buffer;
-        int heightScreen = panel.SCREEN_HEIGHT + buffer;
-
-        Rectangle screenBounds = new Rectangle(xScreen, yScreen, widthScreen, heightScreen);
 
         for (GameObject gameObject : gameObjects) {
-            if (gameObject != null) {
+            if (gameObject != null && gameObject.image != null) {
                 int screenX = gameObject.worldX - panel.cameraX;
                 int screenY = gameObject.worldY - panel.cameraY;
 
-                int xObject = screenX + gameObject.collisionArea.x;
-                int yObject = screenY + gameObject.collisionArea.y;
-                int widthObject = gameObject.collisionArea.width;
-                int heightObject = gameObject.collisionArea.height;
+                int imageWidth = gameObject.image.getWidth();
+                int imageHeight = gameObject.image.getHeight();
 
-                Rectangle objectBounds = new Rectangle(xObject, yObject, widthObject, heightObject);
-
-                if (screenBounds.intersects(objectBounds)) {
+                boolean isVisible = (screenX + imageWidth) >= 0 && screenX <= panel.SCREEN_WIDTH && (screenY + imageHeight) >= 0 && screenY <= panel.SCREEN_HEIGHT;
+                if (isVisible) {
                     gameObject.draw(g2, panel);
                     objectsDrawn++;
                 }

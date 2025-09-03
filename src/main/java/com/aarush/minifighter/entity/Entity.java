@@ -42,7 +42,7 @@ public class Entity {
 
     public int aiDecisionTimer = 0;
 
-    GamePanel panel;
+    protected GamePanel panel;
 
     public Entity(GamePanel panel) {
         this.panel = panel;
