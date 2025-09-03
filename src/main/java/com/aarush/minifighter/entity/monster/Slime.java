@@ -7,9 +7,9 @@ import com.aarush.minifighter.utils.ImageScaler;
 import com.aarush.minifighter.utils.SliceSpritesheet;
 
 import javax.imageio.ImageIO;
-import java.awt.Rectangle;
-import java.awt.Graphics2D;
 import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
@@ -47,7 +47,7 @@ public class Slime extends Entity {
 
     @Override
     public void loadSprite() {
-        String imagePath = "/monsters/slime.png";
+        String imagePath = "/monsters/slime/slime.png";
         BufferedImage sheet;
 
         try (InputStream in = getClass().getResourceAsStream(imagePath)) {
